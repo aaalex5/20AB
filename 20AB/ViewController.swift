@@ -21,7 +21,7 @@ class ViewController: UIViewController {
         var value:Int!
         var position:Int!
         var Image:UIImageView!
-        var hidden:Bool!
+        var moved:Bool!
     }
     
     var boxArr = [box] ()
@@ -33,8 +33,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
       
-        boxArr = [box(value: 0, position: 6 , Image: box1, hidden: false),
-                  box(value: 1, position: 12, Image: box2, hidden: false)]
+        boxArr = [box(value: 0, position: 6 , Image: box1, moved: false),
+                  box(value: 1, position: 12, Image: box2, moved: false)]
 
         let leftSwipe = UISwipeGestureRecognizer(target:self, action: #selector(swipeAction(swipe:)))
         leftSwipe.direction = UISwipeGestureRecognizerDirection.left
@@ -71,13 +71,23 @@ class ViewController: UIViewController {
                             hasLeft = true
                         }
                     }
-                    if hasLeft == false {
-                        boxArr[i].Image.center = CGPoint(x: boxArr[i].Image.center.x - 60,
-                                                         y: boxArr[i].Image.center.y)
-                        boxArr[i].position = boxArr[i].position - 1
+                    //Checks if box can move, moves it and updates that it moved for this swipe
+                    for k in 0...boxArr.count - 1 {
+                        //Checks with the bounds of current formatting of Main box and tiny boxes (compares to 72, which is left bound)
+                        if !hasLeft && boxArr[k].moved == false && boxArr[k].Image.center.x - 60 >= 72 {
+                            boxArr[k].Image.center = CGPoint(x: boxArr[k].Image.center.x - 60,
+                                                             y: boxArr[k].Image.center.y)
+                            boxArr[k].position = boxArr[k].position - 1
+                            boxArr[k].moved = true
+                        }
                     }
                 }
             }
+            //Resets if boxes moved for this swipe to false
+            for i in 0...boxArr.count - 1 {
+                boxArr[i].moved = false;
+            }
+            
             
         case UISwipeGestureRecognizerDirection.right:
             score = score + 1
@@ -88,18 +98,27 @@ class ViewController: UIViewController {
                 if boxArr[i].position != 4 && boxArr[i].position != 8 &&
                     boxArr[i].position != 12 && boxArr[i].position != 16 {
                     let currentPosition = boxArr[i].position
-                    var hasLeft = false
+                    var hasRight = false
                     for j in 0...boxArr.count - 1 {
                         if boxArr[j].position == currentPosition! + 1 {
-                            hasLeft = true
+                            hasRight = true
                         }
                     }
-                    if !hasLeft {
-                        boxArr[i].Image.center = CGPoint(x: boxArr[i].Image.center.x + 60,
-                                                         y: boxArr[i].Image.center.y)
-                        boxArr[i].position = boxArr[i].position + 1
+                    //Checks if box can move, moves it and updates that it moved for this swipe
+                    for k in 0...boxArr.count - 1 {
+                        //Checks with the bounds of current formatting of Main box and tiny boxes (compares to 302, which is right bound)
+                        if !hasRight && boxArr[k].moved == false && boxArr[k].Image.center.x + 60 <= 302 {
+                            boxArr[k].Image.center = CGPoint(x: boxArr[k].Image.center.x + 60,
+                                                             y: boxArr[k].Image.center.y)
+                            boxArr[k].position = boxArr[k].position + 1
+                            boxArr[k].moved = true
+                        }
                     }
                 }
+            }
+            //Resets if boxes moved for this swipe to false
+            for i in 0...boxArr.count - 1 {
+                boxArr[i].moved = false;
             }
             
        case UISwipeGestureRecognizerDirection.up:
@@ -110,43 +129,59 @@ class ViewController: UIViewController {
                 if boxArr[i].position != 1 && boxArr[i].position != 2 &&
                     boxArr[i].position != 3 && boxArr[i].position != 4 {
                     let currentPosition = boxArr[i].position
-                    var hasLeft = false
+                    var hasAbove = false
                     for j in 0...boxArr.count - 1 {
                         if boxArr[j].position == currentPosition! - 4 {
-                            hasLeft = true
+                            hasAbove = true
                         }
                     }
-                    if !hasLeft {
-                        boxArr[i].Image.center = CGPoint(x: boxArr[i].Image.center.x,
-                                                         y: boxArr[i].Image.center.y - 60)
-                        boxArr[i].position = boxArr[i].position - 4
+                    //Checks if box can move, moves it and updates that it moved for this swipe
+                    for k in 0...boxArr.count - 1 {
+                        //Checks with the bounds of current formatting of Main box and tiny boxes (compares to 218, which is top bound)
+                        if !hasAbove && boxArr[k].moved == false && boxArr[k].Image.center.y - 60 >= 218 {
+                            boxArr[k].Image.center = CGPoint(x: boxArr[k].Image.center.x,
+                                                             y: boxArr[k].Image.center.y - 60)
+                            boxArr[k].position = boxArr[k].position - 4
+                            boxArr[k].moved = true
+                        }
                     }
                 }
+            }
+            //Resets if boxes moved for this swipe to false
+            for i in 0...boxArr.count - 1 {
+                boxArr[i].moved = false;
             }
 
        case UISwipeGestureRecognizerDirection.down:
             score = score + 1
             let scoreString = String(score)
             scoreLabel.text = scoreString
-            
+            var hasBelow = false
             for i in 0...boxArr.count - 1 {
                 if boxArr[i].position != 13 && boxArr[i].position != 14 &&
                     boxArr[i].position != 15 && boxArr[i].position != 16 {
                     let currentPosition = boxArr[i].position
-                    var hasLeft = false
+                    hasBelow = false
                     for j in 0...boxArr.count - 1 {
                         if boxArr[j].position == currentPosition! + 4 {
-                            hasLeft = true
+                            hasBelow = true
                         }
                     }
-                    // Probably make it a for loop so that boxes don't run into eachother
-                    // mid-way when swiping
-                    if !hasLeft {
-                        boxArr[i].Image.center = CGPoint(x: boxArr[i].Image.center.x,
-                                                         y: boxArr[i].Image.center.y + 60)
-                        boxArr[i].position = boxArr[i].position + 4
+                    //Checks if box can move, moves it and updates that it moved for this swipe
+                    for k in 0...boxArr.count - 1 {
+                        //Checks with the bounds of current formatting of Main box and tiny boxes (compares to 448, which is bottom bound)
+                        if !hasBelow && boxArr[k].moved == false && boxArr[k].Image.center.y + 60 <= 448 {
+                            boxArr[k].Image.center = CGPoint(x: boxArr[k].Image.center.x,
+                                                             y: boxArr[k].Image.center.y + 60)
+                            boxArr[k].position = boxArr[k].position + 4
+                            boxArr[k].moved = true
+                        }
                     }
                 }
+            }
+            //Resets if boxes moved for this swipe to false
+            for i in 0...boxArr.count - 1 {
+                boxArr[i].moved = false;
             }
             
         default:
@@ -154,8 +189,6 @@ class ViewController: UIViewController {
             scoreLabel.text = scoreString
         }
     }
-    
-    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
