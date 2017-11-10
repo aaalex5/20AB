@@ -15,16 +15,27 @@ class ViewController: UIViewController {
     @IBOutlet weak var scoreLabel: UILabel!
     @IBOutlet weak var box1: UIImageView!
     @IBOutlet weak var box2: UIImageView!
-    @IBOutlet weak var box3: UIImageView!
-    @IBOutlet weak var box4: UIImageView!
-    
-    
 
+    
+    struct box {
+        var value:Int!
+        var position:Int!
+        var Image:UIImageView!
+        var hidden:Bool!
+    }
+    
+    var boxArr = [box] ()
+
+
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        
+      
+        boxArr = [box(value: 0, position: 6 , Image: box1, hidden: false),
+                  box(value: 1, position: 12, Image: box2, hidden: false)]
+
         let leftSwipe = UISwipeGestureRecognizer(target:self, action: #selector(swipeAction(swipe:)))
         leftSwipe.direction = UISwipeGestureRecognizerDirection.left
         self.view.addGestureRecognizer(leftSwipe)
@@ -43,92 +54,115 @@ class ViewController: UIViewController {
         
     }
     
-    @objc func swipeAction(swipe: UISwipeGestureRecognizer){
+    @objc func swipeAction(swipe: UISwipeGestureRecognizer) {
         switch swipe.direction {
         case UISwipeGestureRecognizerDirection.left:
             score = score + 1
             let scoreString = String(score)
             scoreLabel.text = scoreString
             
-            
-            
-            if box1.center.y != box2.center.y, box1.center.y != box3.center.y, box1.center.y != box4.center.y{
-                box1.center = CGPoint(x:box1.center.x - 60, y: box1.center.y)
+            for i in 0...boxArr.count - 1 {
+                if boxArr[i].position != 1 && boxArr[i].position != 5 &&
+                    boxArr[i].position != 9 && boxArr[i].position != 13 {
+                    let currentPosition = boxArr[i].position
+                    var hasLeft = false
+                    for j in 0...boxArr.count - 1 {
+                        if boxArr[j].position == currentPosition! - 1 {
+                            hasLeft = true
+                        }
+                    }
+                    if hasLeft == false {
+                        boxArr[i].Image.center = CGPoint(x: boxArr[i].Image.center.x - 60,
+                                                         y: boxArr[i].Image.center.y)
+                        boxArr[i].position = boxArr[i].position - 1
+                    }
+                }
             }
-            if box2.center.y != box1.center.y, box2.center.y != box3.center.y, box2.center.y != box4.center.y{
-                box2.center = CGPoint(x:box2.center.x - 60, y: box2.center.y)
-            }
-            if box3.center.y != box1.center.y, box3.center.y != box2.center.y, box3.center.y != box4.center.y{
-                box3.center = CGPoint(x:box3.center.x - 60, y: box3.center.y)
-            }
-            if box4.center.y != box1.center.y, box4.center.y != box2.center.y, box4.center.y != box3.center.y{
-                box4.center = CGPoint(x:box4.center.x - 60, y: box4.center.y)
-            }
-            
-            
             
         case UISwipeGestureRecognizerDirection.right:
             score = score + 1
             let scoreString = String(score)
             scoreLabel.text = scoreString
             
-            if box1.center.y != box2.center.y, box1.center.y != box3.center.y, box1.center.y != box4.center.y{
-                box1.center = CGPoint(x:box1.center.x + 60, y: box1.center.y)
-            }
-            if box2.center.y != box1.center.y, box2.center.y != box3.center.y, box2.center.y != box4.center.y{
-                box2.center = CGPoint(x:box2.center.x + 60, y: box2.center.y)
-            }
-            if box3.center.y != box1.center.y, box3.center.y != box2.center.y, box3.center.y != box4.center.y{
-                box3.center = CGPoint(x:box3.center.x + 60, y: box3.center.y)
-            }
-            if box4.center.y != box1.center.y, box4.center.y != box2.center.y, box4.center.y != box3.center.y{
-                box4.center = CGPoint(x:box4.center.x + 60, y: box4.center.y)
+            for i in 0...boxArr.count - 1 {
+                if boxArr[i].position != 4 && boxArr[i].position != 8 &&
+                    boxArr[i].position != 12 && boxArr[i].position != 16 {
+                    let currentPosition = boxArr[i].position
+                    var hasLeft = false
+                    for j in 0...boxArr.count - 1 {
+                        if boxArr[j].position == currentPosition! + 1 {
+                            hasLeft = true
+                        }
+                    }
+                    if !hasLeft {
+                        boxArr[i].Image.center = CGPoint(x: boxArr[i].Image.center.x + 60,
+                                                         y: boxArr[i].Image.center.y)
+                        boxArr[i].position = boxArr[i].position + 1
+                    }
+                }
             }
             
        case UISwipeGestureRecognizerDirection.up:
             score = score + 1
             let scoreString = String(score)
             scoreLabel.text = scoreString
-            
-            if box1.center.x != box2.center.x, box1.center.x != box3.center.x, box1.center.x != box4.center.x{
-                box1.center = CGPoint(x:box1.center.x, y: box1.center.y - 60)
+            for i in 0...boxArr.count - 1 {
+                if boxArr[i].position != 1 && boxArr[i].position != 2 &&
+                    boxArr[i].position != 3 && boxArr[i].position != 4 {
+                    let currentPosition = boxArr[i].position
+                    var hasLeft = false
+                    for j in 0...boxArr.count - 1 {
+                        if boxArr[j].position == currentPosition! - 4 {
+                            hasLeft = true
+                        }
+                    }
+                    if !hasLeft {
+                        boxArr[i].Image.center = CGPoint(x: boxArr[i].Image.center.x,
+                                                         y: boxArr[i].Image.center.y - 60)
+                        boxArr[i].position = boxArr[i].position - 4
+                    }
+                }
             }
-            if box2.center.x != box1.center.x, box2.center.x != box3.center.x, box2.center.x != box4.center.x{
-                box2.center = CGPoint(x:box2.center.x, y: box2.center.y - 60)
-            }
-            if box3.center.x != box1.center.x, box3.center.x != box2.center.x, box3.center.x != box4.center.x{
-                box3.center = CGPoint(x:box3.center.x, y: box3.center.y - 60)
-            }
-            if box4.center.x != box1.center.x, box4.center.x != box2.center.x, box4.center.x != box3.center.x{
-                box4.center = CGPoint(x:box4.center.x, y: box4.center.y - 60)
-            }
+
        case UISwipeGestureRecognizerDirection.down:
             score = score + 1
             let scoreString = String(score)
             scoreLabel.text = scoreString
-            if box1.center.x != box2.center.x, box1.center.x != box3.center.x, box1.center.x != box4.center.x{
-                box1.center = CGPoint(x:box1.center.x, y: box1.center.y + 60)
+            
+            for i in 0...boxArr.count - 1 {
+                if boxArr[i].position != 13 && boxArr[i].position != 14 &&
+                    boxArr[i].position != 15 && boxArr[i].position != 16 {
+                    let currentPosition = boxArr[i].position
+                    var hasLeft = false
+                    for j in 0...boxArr.count - 1 {
+                        if boxArr[j].position == currentPosition! + 4 {
+                            hasLeft = true
+                        }
+                    }
+                    // Probably make it a for loop so that boxes don't run into eachother
+                    // mid-way when swiping
+                    if !hasLeft {
+                        boxArr[i].Image.center = CGPoint(x: boxArr[i].Image.center.x,
+                                                         y: boxArr[i].Image.center.y + 60)
+                        boxArr[i].position = boxArr[i].position + 4
+                    }
+                }
             }
-            if box2.center.x != box1.center.x, box2.center.x != box3.center.x, box2.center.x != box4.center.x{
-                box2.center = CGPoint(x:box2.center.x, y: box2.center.y + 60)
-            }
-            if box3.center.x != box1.center.x, box3.center.x != box2.center.x, box3.center.x != box4.center.x{
-                box3.center = CGPoint(x:box3.center.x, y: box3.center.y + 60)
-            }
-            if box4.center.x != box1.center.x, box4.center.x != box2.center.x, box4.center.x != box3.center.x{
-                box4.center = CGPoint(x:box4.center.x, y: box4.center.y + 60)
-            }
+            
         default:
             let scoreString = String(score)
             scoreLabel.text = scoreString
         }
     }
-
+    
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
 }
+
 
 
 
